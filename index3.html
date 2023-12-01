@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moon Sign Calculator</title>
+    <style>
+        body 
+        {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: green;
+        }
+          #video-bg {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          min-width: 100%;
+          min-height: 100%;
+          width: auto;
+          height: auto;
+          transform: translate(-50%, -50%);
+          z-index: -1; 
+          }
+
+        #calculator {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        #signature {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        #descriptions {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        #descriptions p {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop id="video-bg">
+        <source src="bg2.mp4.mp4" type="video/mp4">
+    </video>
+
+<div id="calculator">
+    <h2>Moon Sign Calculator</h2>
+    <label for="dob">Enter your date of birth:</label>
+    <input type="date" id="dob" required>
+    <label for="birthTime">Enter your birth time:</label>
+    <input type="time" id="birthTime" required>
+    <label for="timezone">Select your time zone:</label>
+    <select id="timezone" required>
+        <option value="-12">UTC-12:00</option>
+        <option value="-11">UTC-11:00</option>
+        <option value="-10">UTC-10:00</option>
+        <option value="-9">UTC-09:00</option>
+        <option value="-8">UTC-08:00</option>
+        <option value="-7">UTC-07:00</option>
+        <option value="-6">UTC-06:00</option>
+        <option value="-5">UTC-05:00</option>
+        <option value="-4">UTC-04:00</option>
+        <option value="-3">UTC-03:00</option>
+        <option value="-2">UTC-02:00</option>
+        <option value="-1">UTC-01:00</option>
+        <option value="0" selected>UTC+00:00 (GMT)</option>
+        <option value="1">UTC+01:00</option>
+        <option value="2">UTC+02:00</option>
+        <option value="3">UTC+03:00</option>
+        <option value="4">UTC+04:00</option>
+        <option value="5">UTC+05:00</option>
+        <option value="6">UTC+06:00</option>
+        <option value="7">UTC+07:00</option>
+        <option value="8">UTC+08:00</option>
+        <option value="9">UTC+09:00</option>
+        <option value="10">UTC+10:00</option>
+        <option value="11">UTC+11:00</option>
+        <option value="12">UTC+12:00</option>
+    </select>
+    <button onclick="calculateMoonSign()">Calculate</button>
+    <p id="result"></p>
+
+    <div id="descriptions">
+        <p id="aries-desc">Aries individuals are known for their dynamic energy, assertiveness, and natural leadership qualities. They often thrive in competitive and challenging situations.</p>
+        <p id="taurus-desc">Taurus individuals are characterized by their stability, patience, and practicality. They value material comforts and are often reliable and steadfast.</p>
+        <p id="gemini-desc">Geminis are versatile, curious, and adaptable. They are known for their communication skills and enjoy exploring a variety of interests.</p>
+        <p id="cancer-desc">Cancer individuals are nurturing, empathetic, and deeply connected to their emotions. They often prioritize family and home life.</p>
+        <p id="leo-desc">Leos are confident, charismatic, and often enjoy being in the spotlight. They have a generous nature and a strong sense of self.</p>
+        <p id="virgo-desc">Virgos are analytical, detail-oriented, and often have a keen sense of organization. They strive for perfection and are service-oriented.</p>
+        <p id="libra-desc">Libras seek balance and harmony in all aspects of life. They are known for their diplomatic nature, fairness, and love of beauty.</p>
+        <p id="scorpio-desc">Scorpios are passionate, intense, and often mysterious. They value deep connections and can be both determined and emotionally complex.</p>
+        <p id="saggitarius-desc">Sagittarians are adventurous, optimistic, and love exploring new ideas and experiences. They have a free-spirited and open-minded nature.</p>
+        <p id="capricorn-desc">Capricorns are ambitious, disciplined, and value hard work. They are often focused on achieving long-term goals and success.</p>
+        <p id="aquarius-desc">Aquarians are known for their innovative thinking, independence, and humanitarian values. They often march to the beat of their own drum.</p>
+        <p id="pisces-desc">Pisceans are empathetic, imaginative, and often have a dreamy nature. They are intuitive and can be deeply connected to the emotions of others.</p>
+        
+    </div>
+
+    <div id="signature">Made by Shivraj</div>
+
+    <script>
+        function calculateMoonSign() {
+            const dobInput = document.getElementById('dob');
+            const timeInput = document.getElementById('birthTime');
+            const timezoneInput = document.getElementById('timezone');
+            const resultOutput = document.getElementById('result');
+            const descriptions = document.getElementById('descriptions');
+
+            const dob = new Date(`${dobInput.value} ${timeInput.value}`);
+            if (isNaN(dob.getTime())) {
+                resultOutput.textContent = 'Invalid date of birth or time';
+                descriptions.innerHTML = '';
+                return;
+            }
+
+            
+            dob.setHours(dob.getHours() - parseInt(timezoneInput.value, 10));
+
+            const moonSign = calculateMoonSignLogic(dob);
+            resultOutput.textContent = `Your Moon Sign is ${moonSign}`;
+
+            showDescription(moonSign);
+        }
+
+        function calculateMoonSignLogic(dob) {
+            const zodiacSigns = [
+                { sign: 'Aries', start: '03-21', end: '04-19' },
+                { sign: 'Taurus', start: '04-20', end: '05-20' },
+                { sign: 'Gemini', start: '05-21', end: '06-20' },
+                { sign: 'Cancer', start: '06-21', end: '07-22' },
+                { sign: 'Leo', start: '07-23', end: '08-22' },
+                { sign: 'Virgo', start: '08-23', end: '09-22' },
+                { sign: 'Libra', start: '09-23', end: '10-22' },
+                { sign: 'Scorpio', start: '10-23', end: '11-21' },
+                { sign: 'Sagittarius', start: '11-22', end: '12-21' },
+                { sign: 'Capricorn', start: '12-22', end: '01-19' },
+                { sign: 'Aquarius', start: '01-20', end: '02-18' },
+                { sign: 'Pisces', start: '02-19', end: '03-20' }
+            ];
+
+            const month = dob.getMonth() + 1;
+            const day = dob.getDate();
+            const formattedDate = `${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+
+            let moonSign = '';
+            for (const sign of zodiacSigns) {
+                if ((formattedDate >= sign.start && formattedDate <= sign.end) || (formattedDate >= sign.start && sign.start > sign.end)) {
+                    moonSign = sign.sign;
+                    break;
+                }
+            }
+
+            
+            if (dob.getHours() >= 12) {
+                moonSign = getPreviousZodiacSign(moonSign);
+            }
+
+            return moonSign;
+        }
+
+        function getPreviousZodiacSign(currentSign) {
+            const zodiacSigns = [
+                'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+                'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
+            ];
+            const currentIndex = zodiacSigns.indexOf(currentSign);
+            const previousIndex = (currentIndex - 1 + zodiacSigns.length) % zodiacSigns.length;
+            return zodiacSigns[previousIndex];
+        }
+
+        function showDescription(sign) {
+           
+            const descriptions = document.getElementById('descriptions');
+            const paragraphs = descriptions.querySelectorAll('p');
+            paragraphs.forEach(p => {
+                p.style.display = 'none';
+            });
+
+            const signDescription = document.getElementById(`${sign.toLowerCase()}-desc`);
+            if (signDescription) {
+                signDescription.style.display = 'block';
+            }
+        }
+    </script>
+</div>
+
+</body>
+</html>
